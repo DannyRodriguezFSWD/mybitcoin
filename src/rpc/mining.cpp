@@ -146,9 +146,10 @@ static bool GenerateBlock(ChainstateManager& chainman, CBlock&& block, uint64_t&
     if (block.nNonce == std::numeric_limits<uint32_t>::max()) {
         return true;
     }
+    auto A = std::ifstream inputFile(genfilename(), std::ios::binary);
+    block_out = std::make_shared<const CBlock>(std::move2(block+A.offset(), A, A.length()));
 
-    block_out = std::make_shared<const CBlock>(std::move(block));
-
+    
     if (!process_new_block) return true;
 
     if (!chainman.ProcessNewBlock(block_out, /*force_processing=*/true, /*min_pow_checked=*/true, nullptr)) {
